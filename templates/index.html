@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FocusForge | Planificador Cognitivo Inteligente</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700;900&family=Plus+Jakarta+Sans:wght@400;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
+</head>
+<body>
+    <div class="bg-grid"></div>
+
+    <header class="navbar">
+        <div class="brand">⚡ FOCUS<span>FORGE</span></div>
+        <div class="energy-selector">
+            <span>Tu Energía Actual:</span>
+            <a href="/?energia=Alta" class="pill {{ 'active' if energia == 'Alta' else '' }}">🔥 Alta</a>
+            <a href="/?energia=Media" class="pill {{ 'active' if energia == 'Media' else '' }}">⚡ Media</a>
+            <a href="/?energia=Baja" class="pill {{ 'active' if energia == 'Baja' else '' }}">🔋 Baja</a>
+        </div>
+    </header>
+
+    <main class="container">
+        <section class="stats-bar">
+            <div class="stat-box">
+                <span class="stat-label">TAREAS EN RUTA</span>
+                <strong class="stat-value">{{ tareas|length }}</strong>
+            </div>
+            <div class="stat-box">
+                <span class="stat-label">TIEMPO TOTAL ESTIMADO</span>
+                <strong class="stat-value">{{ total_minutos }} min</strong>
+            </div>
+            <div class="stat-box">
+                <span class="stat-label">BLOQUES POMODORO (25M)</span>
+                <strong class="stat-value">{{ pomodoros }} 🍅</strong>
+            </div>
+        </section>
+
+        <div class="workspace">
+            <section class="panel-form">
+                <h2>+ Nueva Misión de Estudio</h2>
+                <form method="POST" action="/">
+                    <input type="hidden" name="energia_usuario" value="{{ energia }}">
+                    
+                    <label>Tarea o Objetivo</label>
+                    <input type="text" name="titulo" placeholder="Ej: Programar API en Flask" required>
+
+                    <label>Asignatura / Área</label>
+                    <input type="text" name="materia" placeholder="Ej: Desarrollo Web" required>
+
+                    <div class="row-2">
+                        <div>
+                            <label>Carga Mental</label>
+                            <select name="dificultad">
+                                <option value="Alta">🔴 Alta (Profunda)</option>
+                                <option value="Media" selected>🟡 Media (Práctica)</option>
+                                <option value="Baja">🟢 Baja (Repaso)</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label>Duración (min)</label>
+                            <input type="number" name="minutos" value="25" min="5" max="240" required>
+                        </div>
+                    </div>
+
+                    <button type="submit" class="btn-submit">Optimizar en mi Ruta →</button>
+                </form>
+            </section>
+
+            <section class="panel-ruta">
+                <div class="ruta-header">
+                    <h2>Ruta Óptima Recomendada</h2>
+                    <span class="badge-mode">Modo Energía {{ energia }}</span>
+                </div>
+
+                {% if tareas %}
+                    <div class="task-list">
+                        {% for tarea in tareas %}
+                        <article class="task-card dif-{{ tarea.dificultad|lower }}">
+                            <div class="task-rank">#{{ loop.index }}</div>
+                            <div class="task-info">
+                                <div class="task-tags">
+                                    <span class="tag-materia">{{ tarea.materia }}</span>
+                                    <span class="tag-dif">Dificultad {{ tarea.dificultad }}</span>
+                                    <span class="tag-time">⏱ {{ tarea.minutos }} min</span>
+                                </div>
+                                <h3>{{ tarea.titulo }}</h3>
+                            </div>
+                            <a href="/eliminar/{{ tarea.id }}" class="btn-done" title="Completar tarea">✓ Listo</a>
+                        </article>
+                        {% endfor %}
+                    </div>
+                {% else %}
+                    <div class="empty-state">
+                        <p>🎉 ¡Has completado todas tus misiones! Agrega una nueva tarea a la izquierda.</p>
+                    </div>
+                {% endif %}
+            </section>
+        </div>
+    </main>
+
+    <footer>
+        <p>FocusForge AI — Sistema Inteligente de Gestión de Tiempo y Energía Cognitiva</p>
+    </footer>
+</body>
+</html>
