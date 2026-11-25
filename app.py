@@ -2,7 +2,9 @@ import random
 from datetime import datetime, timedelta
 from flask import Flask, render_template, request, redirect, url_for
 
+
 app = Flask(__name__)
+
 
 tareas = [
     {"id": 1, "titulo": "Programar la lógica principal en Python", "materia": "Programación", "dificultad": "Alta", "minutos": 45, "xp": 150},
@@ -17,8 +19,10 @@ misiones_sorpresa = [
     {"titulo": "Repaso Express: Resumir 3 conceptos clave en voz alta", "materia": "Estudio Activo", "dificultad": "Baja", "minutos": 15, "xp": 60}
 ]
 
+
 xp_total = 120
 racha_dias = 3
+
 
 def calcular_prioridad(dificultad, energia):
     if energia == "Alta":
@@ -66,15 +70,18 @@ def index():
         reverse=True
     )
 
+
     total_minutos = sum(t["minutos"] for t in tareas_ordenadas)
     hora_fin = (datetime.now() + timedelta(minutes=total_minutos)).strftime("%H:%M")
     nivel, titulo_rango, progreso_nivel = obtener_rango(xp_total)
+
 
     mensajes = {
         "Alta": "🔥 ¡Energía al máximo! Primero conquistamos las misiones épicas (+150 XP).",
         "Media": "⚡ ¡Ritmo constante! Equilibramos avance rápido con victorias seguras.",
         "Baja": "🔋 ¡Modo inteligente! Empezamos por misiones rápidas para mantener la racha sin cansarte."
     }
+
 
     return render_template(
         'index.html',
