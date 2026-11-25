@@ -1,14 +1,18 @@
 <!DOCTYPE html>
 <html lang="es">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>FocusForge AI | Arena de Productividad Gamificada</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@700;800;900&family=Plus+Jakarta+Sans:wght@400;600;700;800&display=swap" rel="stylesheet">
+    <link
+        href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700&family=Space+Grotesk:wght@700&family=Syne:wght@700;800&display=swap"
+        rel="stylesheet">
     <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
 </head>
+
 <body>
     <div class="fondo-animado"></div>
 
@@ -47,9 +51,12 @@
                 <p>{{ mensaje }}</p>
             </div>
             <div class="energia-botones">
-                <a href="/?energia=Alta" class="btn-modo alta {{ 'activo' if energia == 'Alta' else '' }}">🔥 Turbo (Alta)</a>
-                <a href="/?energia=Media" class="btn-modo media {{ 'activo' if energia == 'Media' else '' }}">⚡ Estable (Media)</a>
-                <a href="/?energia=Baja" class="btn-modo baja {{ 'activo' if energia == 'Baja' else '' }}">🔋 Chill (Baja)</a>
+                <a href="/?energia=Alta" class="btn-modo alta {{ 'activo' if energia == 'Alta' else '' }}">🔥 Turbo
+                    (Alta)</a>
+                <a href="/?energia=Media" class="btn-modo media {{ 'activo' if energia == 'Media' else '' }}">⚡ Estable
+                    (Media)</a>
+                <a href="/?energia=Baja" class="btn-modo baja {{ 'activo' if energia == 'Baja' else '' }}">🔋 Chill
+                    (Baja)</a>
             </div>
         </section>
 
@@ -102,7 +109,8 @@
                     <input type="hidden" name="energia_usuario" value="{{ energia }}">
 
                     <label for="titulo">Objetivo o Tarea</label>
-                    <input type="text" id="titulo" name="titulo" placeholder="Ej: Terminar laboratorio de Python" required>
+                    <input type="text" id="titulo" name="titulo" placeholder="Ej: Terminar laboratorio de Python"
+                        required>
 
                     <label for="materia">Asignatura</label>
                     <input type="text" id="materia" name="materia" placeholder="Ej: Infraestructura TI" required>
@@ -136,28 +144,28 @@
                 </div>
 
                 {% if tareas %}
-                    <div class="cola-misiones">
-                        {% for tarea in tareas %}
-                        <div class="card-mision dif-{{ tarea.dificultad|lower }} {{ 'primera' if loop.first else '' }}">
-                            <div class="rank-num">#{{ loop.index }}</div>
-                            <div class="card-cuerpo">
-                                <h4>{{ tarea.titulo }}</h4>
-                                <div class="card-tags">
-                                    <span>{{ tarea.materia }}</span>
-                                    <span>⏱ {{ tarea.minutos }} min</span>
-                                    <span class="tag-recompensa">⭐ +{{ tarea.xp }} XP</span>
-                                </div>
+                <div class="cola-misiones">
+                    {% for tarea in tareas %}
+                    <div class="card-mision dif-{{ tarea.dificultad|lower }} {{ 'primera' if loop.first else '' }}">
+                        <div class="rank-num">#{{ loop.index }}</div>
+                        <div class="card-cuerpo">
+                            <h4>{{ tarea.titulo }}</h4>
+                            <div class="card-tags">
+                                <span>{{ tarea.materia }}</span>
+                                <span>⏱ {{ tarea.minutos }} min</span>
+                                <span class="tag-recompensa">⭐ +{{ tarea.xp }} XP</span>
                             </div>
-                            <a href="/completar/{{ tarea.id }}?energia={{ energia }}" class="btn-reclamar">✓ Reclamar XP</a>
                         </div>
-                        {% endfor %}
+                        <a href="/completar/{{ tarea.id }}?energia={{ energia }}" class="btn-reclamar">✓ Reclamar XP</a>
                     </div>
+                    {% endfor %}
+                </div>
                 {% else %}
-                    <div class="pantalla-victoria">
-                        <div class="trofeo">🏆</div>
-                        <h4>¡VICTORIA TOTAL!</h4>
-                        <p>Completaste todas tus misiones. Presiona <strong>🎲 Sorpresa</strong> o agrega un nuevo reto.</p>
-                    </div>
+                <div class="pantalla-victoria">
+                    <div class="trofeo">🏆</div>
+                    <h4>¡VICTORIA TOTAL!</h4>
+                    <p>Completaste todas tus misiones. Presiona <strong>🎲 Sorpresa</strong> o agrega un nuevo reto.</p>
+                </div>
                 {% endif %}
             </div>
 
@@ -201,7 +209,7 @@
                     osc.start();
                     osc.stop(ctx.currentTime + 0.8);
                 }
-            } catch (e) {}
+            } catch (e) { }
         }
 
         // Confeti Neón
@@ -306,4 +314,5 @@
         }
     </script>
 </body>
+
 </html>

@@ -10,7 +10,8 @@
     --texto: #ffffff;
     --gris: #cbd5e1;
     --borde: rgba(255, 255, 255, 0.12);
-    --font-titulo: 'Outfit', sans-serif;
+    --font-titulo: 'Syne', sans-serif;
+    --font-datos: 'Space Grotesk', sans-serif;
     --font-cuerpo: 'Plus Jakarta Sans', sans-serif;
 }
 
@@ -57,16 +58,30 @@ body {
 
 .marca {
     font-family: var(--font-titulo);
-    font-size: 25px;
-    font-weight: 900;
-    letter-spacing: 1px;
+    font-size: 27px;
+    font-weight: 800;
+    letter-spacing: 0.5px;
+    cursor: default;
+    transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275), letter-spacing 0.3s ease;
+}
+
+.marca:hover {
+    transform: scale(1.05);
+    letter-spacing: 2px;
 }
 
 .marca span {
-    background: linear-gradient(90deg, var(--cian), var(--magenta));
+    background: linear-gradient(90deg, var(--cian), var(--magenta), var(--amarillo), var(--cian));
+    background-size: 300% auto;
     -webkit-background-clip: text;
     background-clip: text;
     color: transparent;
+    animation: flujoDegradado 5s linear infinite;
+}
+
+@keyframes flujoDegradado {
+    0% { background-position: 0% center; }
+    100% { background-position: 300% center; }
 }
 
 .perfil-xp {
@@ -80,12 +95,18 @@ body {
     padding: 8px 14px;
     border-radius: 14px;
     border: 1px solid var(--borde);
+    transition: border-color 0.25s ease, transform 0.25s ease;
+}
+
+.perfil-xp:hover {
+    border-color: var(--amarillo);
+    transform: translateY(-2px);
 }
 
 .nivel-badge {
-    font-family: var(--font-titulo);
-    font-weight: 900;
-    font-size: 13px;
+    font-family: var(--font-datos);
+    font-weight: 700;
+    font-size: 14px;
     background: linear-gradient(135deg, var(--amarillo), #ff8800);
     color: #070a14;
     padding: 6px 12px;
@@ -103,7 +124,10 @@ body {
     margin-bottom: 5px;
 }
 
-.xp-puntos { color: var(--amarillo); }
+.xp-puntos {
+    font-family: var(--font-datos);
+    color: var(--amarillo);
+}
 
 .barra-xp-fondo {
     height: 8px;
@@ -122,11 +146,18 @@ body {
 .hud-stats { display: flex; gap: 10px; flex-wrap: wrap; }
 
 .hud-pill {
+    font-family: var(--font-datos);
     padding: 8px 14px;
     border-radius: 12px;
     font-size: 13px;
     background: rgba(255, 255, 255, 0.06);
     border: 1px solid var(--borde);
+    transition: transform 0.2s ease, border-color 0.2s ease;
+}
+
+.hud-pill:hover {
+    transform: translateY(-2px);
+    border-color: var(--cian);
 }
 
 .hud-pill.fuego strong { color: #ff7b00; }
@@ -144,10 +175,11 @@ body {
 
 .tag-cyber {
     display: inline-block;
-    font-family: var(--font-titulo);
+    font-family: var(--font-datos);
     font-size: 11px;
-    font-weight: 800;
-    letter-spacing: 1.4px;
+    font-weight: 700;
+    letter-spacing: 2px;
+    text-transform: uppercase;
     color: var(--cian);
     margin-bottom: 6px;
 }
@@ -168,8 +200,15 @@ body {
 
 .energia-texto h1 {
     font-family: var(--font-titulo);
-    font-size: 26px;
+    font-size: 28px;
+    font-weight: 800;
+    letter-spacing: -0.5px;
     margin-bottom: 4px;
+    transition: color 0.3s ease;
+}
+
+.panel-energia:hover .energia-texto h1 {
+    color: var(--cian);
 }
 
 .energia-texto p { color: var(--gris); font-size: 15px; }
@@ -178,17 +217,23 @@ body {
 
 .btn-modo {
     text-decoration: none;
+    font-family: var(--font-datos);
     color: #fff;
     background: var(--card);
     border: 1px solid var(--borde);
     padding: 12px 20px;
     border-radius: 14px;
-    font-weight: 800;
+    font-weight: 700;
     font-size: 14px;
+    letter-spacing: 0.4px;
     transition: all 0.25s cubic-bezier(0.175, 0.885, 0.32, 1.275);
 }
 
-.btn-modo:hover { transform: translateY(-4px) scale(1.03); border-color: var(--cian); }
+.btn-modo:hover {
+    transform: translateY(-4px) scale(1.04);
+    border-color: var(--cian);
+    letter-spacing: 0.8px;
+}
 
 .btn-modo.alta.activo {
     background: linear-gradient(135deg, #ff2a85, #ff7b00);
@@ -231,39 +276,52 @@ body {
 
 .mision-etiquetas { display: flex; gap: 10px; flex-wrap: wrap; margin-bottom: 10px; }
 
-.badge-boss {
-    font-family: var(--font-titulo);
+.badge-boss, .badge-xp {
+    font-family: var(--font-datos);
     font-size: 11px;
-    font-weight: 800;
+    font-weight: 700;
+    letter-spacing: 1px;
     padding: 5px 12px;
     border-radius: 50px;
+}
+
+.badge-boss {
     background: rgba(0, 245, 212, 0.18);
     color: var(--cian);
 }
 
 .badge-xp {
-    font-family: var(--font-titulo);
-    font-size: 11px;
-    font-weight: 800;
-    padding: 5px 12px;
-    border-radius: 50px;
     background: rgba(255, 214, 10, 0.2);
     color: var(--amarillo);
 }
 
 .mision-datos h2 {
     font-family: var(--font-titulo);
-    font-size: 26px;
+    font-size: 28px;
+    font-weight: 800;
     margin-bottom: 10px;
+    transition: transform 0.25s ease, color 0.25s ease;
 }
 
-.mision-meta { display: flex; gap: 14px; flex-wrap: wrap; font-size: 14px; color: var(--gris); }
+.mision-activa:hover .mision-datos h2 {
+    color: var(--amarillo);
+    transform: translateX(4px);
+}
+
+.mision-meta {
+    font-family: var(--font-datos);
+    display: flex;
+    gap: 14px;
+    flex-wrap: wrap;
+    font-size: 14px;
+    color: var(--gris);
+}
 
 .mision-reloj { display: flex; align-items: center; gap: 20px; flex-wrap: wrap; }
 
 .anillo-progreso {
-    width: 136px;
-    height: 136px;
+    width: 138px;
+    height: 138px;
     border-radius: 50%;
     background: conic-gradient(var(--cian) 0deg, rgba(255, 255, 255, 0.12) 0deg);
     display: flex;
@@ -271,6 +329,11 @@ body {
     justify-content: center;
     padding: 7px;
     box-shadow: 0 0 28px rgba(0, 245, 212, 0.3);
+    transition: transform 0.3s ease;
+}
+
+.anillo-progreso:hover {
+    transform: scale(1.06);
 }
 
 .anillo-interior {
@@ -285,16 +348,18 @@ body {
 }
 
 .tiempo-texto {
-    font-family: var(--font-titulo);
-    font-size: 27px;
-    font-weight: 900;
+    font-family: var(--font-datos);
+    font-size: 29px;
+    font-weight: 700;
     color: var(--amarillo);
+    letter-spacing: 1px;
 }
 
 .tiempo-sub {
+    font-family: var(--font-datos);
     font-size: 9px;
-    font-weight: 800;
-    letter-spacing: 1px;
+    font-weight: 700;
+    letter-spacing: 1.5px;
     color: var(--cian);
 }
 
@@ -304,14 +369,15 @@ body {
     border: none;
     padding: 10px 18px;
     border-radius: 11px;
-    font-family: inherit;
-    font-weight: 800;
+    font-family: var(--font-datos);
+    font-weight: 700;
     font-size: 13px;
+    letter-spacing: 0.5px;
     cursor: pointer;
-    transition: transform 0.2s ease;
+    transition: transform 0.2s ease, letter-spacing 0.2s ease;
 }
 
-.btn-arcade:hover { transform: scale(1.06); }
+.btn-arcade:hover { transform: scale(1.06); letter-spacing: 1px; }
 .btn-arcade.play { background: var(--verde); color: #070a14; box-shadow: 0 4px 15px rgba(57, 255, 20, 0.4); }
 .btn-arcade.pause { background: var(--amarillo); color: #070a14; }
 .btn-arcade.reset { background: rgba(255, 255, 255, 0.14); color: #fff; }
@@ -342,16 +408,17 @@ body {
 
 .cabecera-panel h3 {
     font-family: var(--font-titulo);
-    font-size: 20px;
+    font-size: 22px;
+    font-weight: 800;
 }
 
 .btn-sorpresa {
     text-decoration: none;
     background: linear-gradient(135deg, var(--amarillo), #ff8800);
     color: #070a14;
-    font-family: var(--font-titulo);
-    font-weight: 900;
-    font-size: 12px;
+    font-family: var(--font-datos);
+    font-weight: 700;
+    font-size: 13px;
     padding: 9px 14px;
     border-radius: 12px;
     box-shadow: 0 4px 16px rgba(255, 214, 10, 0.35);
@@ -378,7 +445,7 @@ form input, form select {
     border: 1px solid var(--borde);
     background: #0b1021;
     color: #fff;
-    font-family: inherit;
+    font-family: var(--font-cuerpo);
     font-size: 14px;
     outline: none;
     transition: border-color 0.2s ease, box-shadow 0.2s ease;
@@ -405,14 +472,16 @@ form input:focus, form select:focus {
     color: #fff;
     font-family: var(--font-titulo);
     font-weight: 800;
-    font-size: 14px;
+    font-size: 15px;
+    letter-spacing: 0.5px;
     cursor: pointer;
     box-shadow: 0 8px 25px rgba(255, 42, 133, 0.4);
-    transition: transform 0.25s ease, box-shadow 0.25s ease;
+    transition: transform 0.25s ease, box-shadow 0.25s ease, letter-spacing 0.25s ease;
 }
 
 .btn-crear:hover {
     transform: translateY(-3px);
+    letter-spacing: 1.2px;
     box-shadow: 0 12px 32px rgba(255, 42, 133, 0.6);
 }
 
@@ -446,8 +515,9 @@ form input:focus, form select:focus {
     border-radius: 12px;
     background: rgba(0, 245, 212, 0.15);
     color: var(--cian);
-    font-family: var(--font-titulo);
-    font-weight: 900;
+    font-family: var(--font-datos);
+    font-weight: 700;
+    font-size: 15px;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -455,9 +525,26 @@ form input:focus, form select:focus {
 }
 
 .card-cuerpo { flex: 1; }
-.card-cuerpo h4 { font-size: 16px; font-weight: 700; margin-bottom: 5px; }
+.card-cuerpo h4 {
+    font-family: var(--font-titulo);
+    font-size: 16px;
+    font-weight: 700;
+    margin-bottom: 5px;
+    transition: color 0.2s ease;
+}
 
-.card-tags { display: flex; gap: 8px; flex-wrap: wrap; font-size: 12px; }
+.card-mision:hover .card-cuerpo h4 {
+    color: var(--cian);
+}
+
+.card-tags {
+    font-family: var(--font-datos);
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+    font-size: 12px;
+}
+
 .card-tags span {
     background: rgba(255, 255, 255, 0.08);
     padding: 3px 10px;
@@ -468,7 +555,7 @@ form input:focus, form select:focus {
 .tag-recompensa {
     background: rgba(255, 214, 10, 0.16) !important;
     color: var(--amarillo) !important;
-    font-weight: 800;
+    font-weight: 700;
 }
 
 .btn-reclamar {
@@ -478,8 +565,9 @@ form input:focus, form select:focus {
     border: 1px solid rgba(57, 255, 20, 0.45);
     padding: 10px 16px;
     border-radius: 12px;
+    font-family: var(--font-datos);
     font-size: 13px;
-    font-weight: 800;
+    font-weight: 700;
     white-space: nowrap;
     transition: all 0.2s ease;
 }
@@ -492,6 +580,7 @@ form input:focus, form select:focus {
 }
 
 .pantalla-victoria { text-align: center; padding: 40px 20px; color: var(--gris); }
+.pantalla-victoria h4 { font-family: var(--font-titulo); font-size: 22px; margin-bottom: 6px; }
 .trofeo { font-size: 46px; margin-bottom: 10px; }
 
 #confettiCanvas {
