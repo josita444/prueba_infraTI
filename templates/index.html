@@ -3,106 +3,307 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>FocusForge | Planificador Cognitivo Inteligente</title>
+    <title>FocusForge AI | Arena de Productividad Gamificada</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700;900&family=Plus+Jakarta+Sans:wght@400;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@700;800;900&family=Plus+Jakarta+Sans:wght@400;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
 </head>
 <body>
-    <div class="bg-grid"></div>
+    <div class="fondo-animado"></div>
 
-    <header class="navbar">
-        <div class="brand">⚡ FOCUS<span>FORGE</span></div>
-        <div class="energy-selector">
-            <span>Tu Energía Actual:</span>
-            <a href="/?energia=Alta" class="pill {{ 'active' if energia == 'Alta' else '' }}">🔥 Alta</a>
-            <a href="/?energia=Media" class="pill {{ 'active' if energia == 'Media' else '' }}">⚡ Media</a>
-            <a href="/?energia=Baja" class="pill {{ 'active' if energia == 'Baja' else '' }}">🔋 Baja</a>
+    <!-- BARRA SUPERIOR RPG -->
+    <header class="hud-top">
+        <div class="marca">
+            <span class="icono-rayo">⚡</span> FOCUS<span>FORGE</span>
+        </div>
+
+        <div class="perfil-xp">
+            <div class="nivel-badge">LVL {{ nivel }}</div>
+            <div class="xp-info">
+                <div class="xp-cabecera">
+                    <span class="rango-nombre">{{ rango }}</span>
+                    <span class="xp-puntos">{{ xp }} XP</span>
+                </div>
+                <div class="barra-xp-fondo">
+                    <div class="barra-xp-relleno" id="barraXp" data-xp="{{ progreso_nivel }}"></div>
+                </div>
+            </div>
+        </div>
+
+        <div class="hud-stats">
+            <div class="hud-pill fuego">🔥 Racha: <strong>{{ racha }} días</strong></div>
+            <div class="hud-pill reloj">🏁 Fin: <strong>{{ hora_fin }}</strong></div>
         </div>
     </header>
 
-    <main class="container">
-        <section class="stats-bar">
-            <div class="stat-box">
-                <span class="stat-label">TAREAS EN RUTA</span>
-                <strong class="stat-value">{{ tareas|length }}</strong>
+    <main class="arena">
+
+        <!-- PASO 1: SELECTOR DE ENERGÍA -->
+        <section class="panel-energia">
+            <div class="energia-texto">
+                <span class="tag-cyber">PASO 1 · CALIBRA TU ENERGÍA</span>
+                <h1>¿Cómo está tu batería mental hoy?</h1>
+                <p>{{ mensaje }}</p>
             </div>
-            <div class="stat-box">
-                <span class="stat-label">TIEMPO TOTAL ESTIMADO</span>
-                <strong class="stat-value">{{ total_minutos }} min</strong>
-            </div>
-            <div class="stat-box">
-                <span class="stat-label">BLOQUES POMODORO (25M)</span>
-                <strong class="stat-value">{{ pomodoros }} 🍅</strong>
+            <div class="energia-botones">
+                <a href="/?energia=Alta" class="btn-modo alta {{ 'activo' if energia == 'Alta' else '' }}">🔥 Turbo (Alta)</a>
+                <a href="/?energia=Media" class="btn-modo media {{ 'activo' if energia == 'Media' else '' }}">⚡ Estable (Media)</a>
+                <a href="/?energia=Baja" class="btn-modo baja {{ 'activo' if energia == 'Baja' else '' }}">🔋 Chill (Baja)</a>
             </div>
         </section>
 
-        <div class="workspace">
-            <section class="panel-form">
-                <h2>+ Nueva Misión de Estudio</h2>
+        <!-- PASO 2: MISIÓN JEFE ACTUAL + RELOJ INTERACTIVO -->
+        {% if tareas %}
+        <section class="mision-activa" id="focusCockpit" data-minutos="{{ tareas[0].minutos }}">
+            <div class="mision-datos">
+                <div class="mision-etiquetas">
+                    <span class="badge-boss">🎯 MISIÓN PRINCIPAL #1</span>
+                    <span class="badge-xp">+{{ tareas[0].xp }} XP AL COMPLETAR</span>
+                </div>
+                <h2>{{ tareas[0].titulo }}</h2>
+                <p class="mision-meta">
+                    <span>📚 {{ tareas[0].materia }}</span>
+                    <span>⚔️ Dificultad {{ tareas[0].dificultad }}</span>
+                    <span>⏱ {{ tareas[0].minutos }} min</span>
+                </p>
+            </div>
+
+            <div class="mision-reloj">
+                <div class="anillo-progreso" id="relojAnillo">
+                    <div class="anillo-interior">
+                        <span class="tiempo-texto" id="timerDisplay">{{ "%02d"|format(tareas[0].minutos) }}:00</span>
+                        <span class="tiempo-sub" id="timerEstado">LISTO</span>
+                    </div>
+                </div>
+                <div class="controles-reloj">
+                    <button type="button" class="btn-arcade play" id="btnStart">▶ Jugar / Iniciar</button>
+                    <button type="button" class="btn-arcade pause" id="btnPause">⏸ Pausa</button>
+                    <button type="button" class="btn-arcade reset" id="btnReset">↺ Reiniciar</button>
+                </div>
+            </div>
+        </section>
+        {% endif %}
+
+        <!-- PASO 3: CREAR MISIÓN + LISTA DE RECOMPENSAS -->
+        <section class="tablero-inferior">
+
+            <!-- Izquierda: Formulario + Botón Sorpresa -->
+            <div class="tarjeta-panel">
+                <div class="cabecera-panel">
+                    <div>
+                        <span class="tag-cyber">PASO 2 · CREAR</span>
+                        <h3>Nueva Misión</h3>
+                    </div>
+                    <a href="/sorpresa?energia={{ energia }}" class="btn-sorpresa" id="btnSorpresa">🎲 Sorpresa</a>
+                </div>
+
                 <form method="POST" action="/">
                     <input type="hidden" name="energia_usuario" value="{{ energia }}">
-                    
-                    <label>Tarea o Objetivo</label>
-                    <input type="text" name="titulo" placeholder="Ej: Programar API en Flask" required>
 
-                    <label>Asignatura / Área</label>
-                    <input type="text" name="materia" placeholder="Ej: Desarrollo Web" required>
+                    <label for="titulo">Objetivo o Tarea</label>
+                    <input type="text" id="titulo" name="titulo" placeholder="Ej: Terminar laboratorio de Python" required>
 
-                    <div class="row-2">
+                    <label for="materia">Asignatura</label>
+                    <input type="text" id="materia" name="materia" placeholder="Ej: Infraestructura TI" required>
+
+                    <div class="doble-columna">
                         <div>
-                            <label>Carga Mental</label>
-                            <select name="dificultad">
-                                <option value="Alta">🔴 Alta (Profunda)</option>
-                                <option value="Media" selected>🟡 Media (Práctica)</option>
-                                <option value="Baja">🟢 Baja (Repaso)</option>
+                            <label for="dificultad">Nivel de Reto</label>
+                            <select id="dificultad" name="dificultad">
+                                <option value="Alta">🔴 Épico (+150 XP)</option>
+                                <option value="Media" selected>🟡 Normal (+90 XP)</option>
+                                <option value="Baja">🟢 Rápido (+50 XP)</option>
                             </select>
                         </div>
                         <div>
-                            <label>Duración (min)</label>
-                            <input type="number" name="minutos" value="25" min="5" max="240" required>
+                            <label for="minutos">Minutos</label>
+                            <input type="number" id="minutos" name="minutos" value="25" min="5" max="180" required>
                         </div>
                     </div>
 
-                    <button type="submit" class="btn-submit">Optimizar en mi Ruta →</button>
+                    <button type="submit" class="btn-crear">🚀 Lanzar a mi Ruta</button>
                 </form>
-            </section>
+            </div>
 
-            <section class="panel-ruta">
-                <div class="ruta-header">
-                    <h2>Ruta Óptima Recomendada</h2>
-                    <span class="badge-mode">Modo Energía {{ energia }}</span>
+            <!-- Derecha: Cola de Misiones -->
+            <div class="tarjeta-panel">
+                <div class="cabecera-panel">
+                    <div>
+                        <span class="tag-cyber">PASO 3 · TU COLA DE BATALLA</span>
+                        <h3>Misiones Activas ({{ tareas|length }} · {{ total_minutos }} min)</h3>
+                    </div>
                 </div>
 
                 {% if tareas %}
-                    <div class="task-list">
+                    <div class="cola-misiones">
                         {% for tarea in tareas %}
-                        <article class="task-card dif-{{ tarea.dificultad|lower }}">
-                            <div class="task-rank">#{{ loop.index }}</div>
-                            <div class="task-info">
-                                <div class="task-tags">
-                                    <span class="tag-materia">{{ tarea.materia }}</span>
-                                    <span class="tag-dif">Dificultad {{ tarea.dificultad }}</span>
-                                    <span class="tag-time">⏱ {{ tarea.minutos }} min</span>
+                        <div class="card-mision dif-{{ tarea.dificultad|lower }} {{ 'primera' if loop.first else '' }}">
+                            <div class="rank-num">#{{ loop.index }}</div>
+                            <div class="card-cuerpo">
+                                <h4>{{ tarea.titulo }}</h4>
+                                <div class="card-tags">
+                                    <span>{{ tarea.materia }}</span>
+                                    <span>⏱ {{ tarea.minutos }} min</span>
+                                    <span class="tag-recompensa">⭐ +{{ tarea.xp }} XP</span>
                                 </div>
-                                <h3>{{ tarea.titulo }}</h3>
                             </div>
-                            <a href="/eliminar/{{ tarea.id }}" class="btn-done" title="Completar tarea">✓ Listo</a>
-                        </article>
+                            <a href="/completar/{{ tarea.id }}?energia={{ energia }}" class="btn-reclamar">✓ Reclamar XP</a>
+                        </div>
                         {% endfor %}
                     </div>
                 {% else %}
-                    <div class="empty-state">
-                        <p>🎉 ¡Has completado todas tus misiones! Agrega una nueva tarea a la izquierda.</p>
+                    <div class="pantalla-victoria">
+                        <div class="trofeo">🏆</div>
+                        <h4>¡VICTORIA TOTAL!</h4>
+                        <p>Completaste todas tus misiones. Presiona <strong>🎲 Sorpresa</strong> o agrega un nuevo reto.</p>
                     </div>
                 {% endif %}
-            </section>
-        </div>
+            </div>
+
+        </section>
     </main>
 
-    <footer>
-        <p>FocusForge AI — Sistema Inteligente de Gestión de Tiempo y Energía Cognitiva</p>
-    </footer>
+    <canvas id="confettiCanvas"></canvas>
+
+    <script>
+        // Barra XP dinámica sin errores de linter
+        const barraXp = document.getElementById('barraXp');
+        if (barraXp) {
+            const pct = parseInt(barraXp.dataset.xp, 10) || 0;
+            barraXp.style.width = `${pct}%`;
+        }
+
+        // Sintetizador de efectos de sonido Arcade
+        function tocarSonido(tipo) {
+            try {
+                const AudioCtx = window.AudioContext || window.webkitAudioContext;
+                const ctx = new AudioCtx();
+                const osc = ctx.createOscillator();
+                const gain = ctx.createGain();
+                osc.connect(gain);
+                gain.connect(ctx.destination);
+
+                if (tipo === 'start') {
+                    osc.type = 'triangle';
+                    osc.frequency.setValueAtTime(523.25, ctx.currentTime);
+                    osc.frequency.setValueAtTime(659.25, ctx.currentTime + 0.1);
+                    gain.gain.setValueAtTime(0.15, ctx.currentTime);
+                    gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.3);
+                    osc.start();
+                    osc.stop(ctx.currentTime + 0.3);
+                } else {
+                    osc.type = 'sine';
+                    osc.frequency.setValueAtTime(587.33, ctx.currentTime);
+                    osc.frequency.setValueAtTime(880, ctx.currentTime + 0.15);
+                    gain.gain.setValueAtTime(0.2, ctx.currentTime);
+                    gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.8);
+                    osc.start();
+                    osc.stop(ctx.currentTime + 0.8);
+                }
+            } catch (e) {}
+        }
+
+        // Confeti Neón
+        function lanzarConfeti() {
+            const canvas = document.getElementById('confettiCanvas');
+            if (!canvas) return;
+            const ctx = canvas.getContext('2d');
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+            const colores = ['#00f5d4', '#ff2a85', '#ffd60a', '#8b5cf6', '#39ff14'];
+            const piezas = Array.from({ length: 80 }, () => ({
+                x: Math.random() * canvas.width,
+                y: -20,
+                r: Math.random() * 6 + 4,
+                c: colores[Math.floor(Math.random() * colores.length)],
+                vy: Math.random() * 5 + 3,
+                vx: (Math.random() - 0.5) * 5
+            }));
+            let frame = 0;
+            function loop() {
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
+                piezas.forEach(p => {
+                    p.x += p.vx;
+                    p.y += p.vy;
+                    ctx.fillStyle = p.c;
+                    ctx.beginPath();
+                    ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
+                    ctx.fill();
+                });
+                frame++;
+                if (frame < 80) requestAnimationFrame(loop);
+                else ctx.clearRect(0, 0, canvas.width, canvas.height);
+            }
+            loop();
+        }
+
+        document.querySelectorAll('.btn-reclamar').forEach(btn => {
+            btn.addEventListener('click', () => {
+                tocarSonido('win');
+                lanzarConfeti();
+            });
+        });
+
+        // Reloj Interactivo
+        const cockpit = document.getElementById('focusCockpit');
+        const display = document.getElementById('timerDisplay');
+        const estado = document.getElementById('timerEstado');
+        const anillo = document.getElementById('relojAnillo');
+        const btnStart = document.getElementById('btnStart');
+        const btnPause = document.getElementById('btnPause');
+        const btnReset = document.getElementById('btnReset');
+
+        if (cockpit && display) {
+            const minsInit = parseInt(cockpit.dataset.minutos, 10) || 25;
+            const totalSegs = minsInit * 60;
+            let restantes = totalSegs;
+            let timer = null;
+
+            function refrescar() {
+                const m = Math.floor(restantes / 60);
+                const s = restantes % 60;
+                display.textContent = `${String(m).padStart(2, '0')}:${String(s).padStart(2, '0')}`;
+                const deg = ((totalSegs - restantes) / totalSegs) * 360;
+                anillo.style.background = `conic-gradient(#00f5d4 ${deg}deg, rgba(255,255,255,0.12) ${deg}deg)`;
+            }
+
+            btnStart.addEventListener('click', () => {
+                if (timer) return;
+                tocarSonido('start');
+                estado.textContent = "EN BATALLA";
+                cockpit.classList.add('activo');
+                timer = setInterval(() => {
+                    if (restantes > 0) {
+                        restantes--;
+                        refrescar();
+                    } else {
+                        clearInterval(timer);
+                        timer = null;
+                        estado.textContent = "¡COMPLETADO!";
+                        cockpit.classList.remove('activo');
+                        tocarSonido('win');
+                        lanzarConfeti();
+                    }
+                }, 1000);
+            });
+
+            btnPause.addEventListener('click', () => {
+                clearInterval(timer);
+                timer = null;
+                estado.textContent = "PAUSADO";
+                cockpit.classList.remove('activo');
+            });
+
+            btnReset.addEventListener('click', () => {
+                clearInterval(timer);
+                timer = null;
+                restantes = totalSegs;
+                estado.textContent = "LISTO";
+                cockpit.classList.remove('activo');
+                refrescar();
+            });
+        }
+    </script>
 </body>
 </html>
